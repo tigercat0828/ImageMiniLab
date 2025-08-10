@@ -4,9 +4,43 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageMiniLab.WPF.Views"
+        xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Image Mini Lab" Height="450" Width="800">
+
+    <DockPanel>
         
-    </Grid>
+        <Menu DockPanel.Dock="Top" >
+            <MenuItem Header="檔案(_F)">
+                <MenuItem Header="開啟(_O)" Command="{Binding LoadImageCommand}" />
+                <MenuItem Header="儲存(_S)" Command="{Binding SaveImageCommand}" />
+                <Separator />
+                <MenuItem Header="離開(_E)" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="處理(_P)">
+                <MenuItem Header="灰階(平均)" Command="{Binding GrayscaleAverageCommand}" />
+                <MenuItem Header="灰階(權重)" Command="{Binding GrayscaleWeightedCommand}" />
+                <Separator />
+                <MenuItem Header="水平翻轉"  />
+                <MenuItem Header="垂直翻轉" />
+                <MenuItem Header="逆時針旋轉" Command="{Binding RotateLeftCommand}" />
+                <MenuItem Header="順時針旋轉" Command="{Binding RotateRightCommand}" />
+
+            </MenuItem> 
+        </Menu>
+        
+        <Grid Margin="0 5 0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="5 0 5 0"  Grid.Column="0">
+                <Image Source="{Binding ImgInput}" Stretch="Uniform"/>
+            </Border>
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 0" Grid.Column="1">
+                <Image Source="{Binding ImgOutput}" Stretch="Uniform" />
+            </Border>
+        </Grid>
+    </DockPanel>
+
 </Window>

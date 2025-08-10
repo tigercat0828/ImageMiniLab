@@ -1,9 +1,9 @@
-﻿using ImageMiniLab.WPF.Views;
+﻿using ImageMiniLab.WPF.Interfaces;
+using ImageMiniLab.WPF.Services;
+using ImageMiniLab.WPF.ViewModels;
+using ImageMiniLab.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.CodeDom;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 
 namespace ImageMiniLab.WPF {
@@ -15,10 +15,12 @@ namespace ImageMiniLab.WPF {
 
         public App() {
             var builder = Host.CreateApplicationBuilder();
-
+            // view
+            builder.Services.AddSingleton<IFileService, FileService>();
             builder.Services.AddSingleton<MainWindow>();
+            builder.Services.AddSingleton<MainWindowViewModel>();
+            // services
             _host = builder.Build();
-            
         }
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
