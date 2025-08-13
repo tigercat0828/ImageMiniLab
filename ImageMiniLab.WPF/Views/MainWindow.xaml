@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageMiniLab.WPF.Views"
-        xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
         mc:Ignorable="d"
         Title="Image Mini Lab" Height="450" Width="800">
 
@@ -17,18 +16,46 @@
                 <Separator />
                 <MenuItem Header="離開(_E)" Command="{Binding ExitCommand}"/>
             </MenuItem>
+            <MenuItem Header="編輯(_E)">
+                <MenuItem Header="復原(_U)"  />
+                <MenuItem Header="重作(_R)"  />
+            </MenuItem>
+
             <MenuItem Header="處理(_P)">
                 <MenuItem Header="灰階(平均)" Command="{Binding GrayscaleAverageCommand}" />
                 <MenuItem Header="灰階(權重)" Command="{Binding GrayscaleWeightedCommand}" />
                 <Separator />
-                <MenuItem Header="水平翻轉"  />
-                <MenuItem Header="垂直翻轉" />
+                <MenuItem Header="水平翻轉" Command="{Binding FlipHorizontalCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/icon_flipX.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="垂直翻轉" Command="{Binding FlipVerticalCommand}" />
                 <MenuItem Header="逆時針旋轉" Command="{Binding RotateLeftCommand}" />
                 <MenuItem Header="順時針旋轉" Command="{Binding RotateRightCommand}" />
-
             </MenuItem> 
         </Menu>
-        
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5 3 0 0" >
+            <Button Command="{Binding FlipHorizontalCommand}" ToolTip="水平翻轉">
+                <Image Source="/Assets/flipX.png" Height="24"/>
+            </Button>
+            <Button Command="{Binding FlipVerticalCommand}" ToolTip="垂直翻轉" Margin="5 0 0 0">
+                <Image Source="/Assets/flipY.png" Height="24"/>
+            </Button>
+            <Button Command="{Binding GrayscaleAverageCommand}" ToolTip="灰階" Margin="5 0 0 0">
+                <Image Source="/Assets/blur.png" Height="24"/>
+            </Button>
+            <Button Command="{Binding GaussianBlurCommand}" ToolTip="高斯模糊" Margin="5 0 0 0">
+                <Image Source="/Assets/gray.png" Height="24"/>
+            </Button>
+            <Button Command="{Binding PepperNoiseCommand}" ToolTip="椒鹽雜訊" Margin="5 0 0 0">
+                <Image Source="/Assets/pepper.png" Height="24"/>
+            </Button>
+        </StackPanel>
+        <StackPanel>
+            
+        </StackPanel>
         <Grid Margin="0 5 0 5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -41,6 +68,10 @@
                 <Image Source="{Binding ImgOutput}" Stretch="Uniform" />
             </Border>
         </Grid>
+
     </DockPanel>
+
+  
+    
 
 </Window>

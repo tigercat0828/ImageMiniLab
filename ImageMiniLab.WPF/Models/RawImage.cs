@@ -20,6 +20,10 @@ public class RawImage {
         Height = height;
         Pixels = new byte[width * height * 4]; // BGRA
     }
+
+    public RawImage(RawImage image) {
+        Pixels = [.. image.Pixels];
+    }
     public unsafe void LoadFile(string filename) {
 
         using var src = SKBitmap.Decode(filename) ?? throw new IOException($"Failed to load image : {filename}");
@@ -46,17 +50,6 @@ public class RawImage {
         // or just call
         // fixed (byte* dst = Pixels) Buffer.MemoryCopy((void*)bmp.GetPixels(), dst, Pixels.Length, Pixels.Length);
     }
-    public BitmapSource ToImageSource() {
-
-        var src = BitmapSource.Create(
-            Width, Height,
-            96, 96,         // DPI
-            PixelFormats.Bgra32, null,
-            Pixels, Width * 4);
-
-        src.Freeze();
-        return src;
-    }
     public unsafe void SaveFile(string filename) {
 
         if (Pixels == null || Pixels.Length != Width * Height * 4)
@@ -82,5 +75,16 @@ public class RawImage {
             data.SaveTo(fs);
         }
 
+    }
+    public BitmapSource ToImageSource() {
+
+        var src = BitmapSource.Create(
+            Width, Height,
+            96, 96,         // DPI
+            PixelFormats.Bgra32, null,
+            Pixels, Width * 4);
+
+        src.Freeze();
+        return src;
     }
 }
