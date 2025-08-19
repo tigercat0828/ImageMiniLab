@@ -1,9 +1,7 @@
-﻿
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ImageMiniLab.WPF.ViewModels.Tools;
-public partial class NoiseTool : ObservableObject {
+public partial class SaltPepperNoiseTool : ToolViewModelBase {
 
     [ObservableProperty] private int _probability = 5;
     partial void OnProbabilityChanged(int value) { 

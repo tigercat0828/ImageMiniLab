@@ -234,54 +234,7 @@ public static class ImageProcessing {
         noiseMask = noise;
         return output;
     }
-    public static RawImage HistogramEqualize(RawImage input, bool isGrayscale) {
-        RawImage output = isGrayscale ? 
-            EqualizeForGrayscale(input) : 
-            EqualizeForFullColor(input);
-        return output;
-    }
-
-    public static RawImage EqualizeForGrayscale(RawImage input) {
-        // build histogram
-        int[] hist = new int[256];
-        for (int i = 0; i < input.Length * 4; i += 4) {
-            hist[input[i]]++;
-        }
-        
-        // build CDF and elect min CDF
-        int[] CDF = new int[256];
-        int minCDF = 0;
-        CDF[0] = hist[0];
-        for (int i = 1; i < 256; i++) CDF[i] = hist[i] + CDF[i - 1];
-        for (int i = 0; i < 256; i++) { // first non-zero CDF
-            if (CDF[i] != 0) {
-                minCDF = CDF[i]; 
-                break;
-            }
-        }
-        // build map
-        int total = CDF[255];
-        if (minCDF == total) return new(input);
-
-        byte[] map = new byte[256];
-        double factor = 255.0 / (total - minCDF);
-        for (int i = 0; i < 256; i++) {
-            int m = (int)Math.Round((CDF[i] - minCDF) * factor);
-            map[i] = (byte)Math.Clamp(m, 0, 255);
-        }
-        // retrieve map value
-        RawImage output = new(input.Width, input.Height);
-        for (int i = 0; i < input.Length * 4; i+=4) {
-            byte value = map[input[i]];
-            output[i + 0] = value;
-            output[i + 1] = value;
-            output[i + 2] = value;
-            output[i + 3] = input[i+3];
-        }
-        return output;
-    }
-
-    public static RawImage EqualizeForFullColor(RawImage input) {
+    public static RawImage HistogramEqualize(RawImage input) {
         // build histogram
         int[] hist = new int[256];
         for (int i = 0; i < input.Length*4; i+=4) {

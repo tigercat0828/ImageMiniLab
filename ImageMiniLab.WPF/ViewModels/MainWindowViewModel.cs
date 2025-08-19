@@ -17,14 +17,15 @@ public partial class MainWindowViewModel : ObservableObject {
     private RawImage _rawOutput = new();
 
 
-    [ObservableProperty] private ObservableObject? _activeTool; // tool 
     [ObservableProperty] private string _imageSizeText = "請載入圖片...";
     [ObservableProperty] private string _imageFilename = "Unknown";
     [ObservableProperty] private BitmapSource? _imgInput;
     [ObservableProperty] private BitmapSource? _imgOutput;
 
     // tool 
-    private readonly NoiseTool _noiseTool = new();
+    [ObservableProperty] private ToolViewModelBase? _activeTool; // tool 
+    private readonly SaltPepperNoiseTool _saltNoiseTool = new();
+    private readonly GaussianNoiseTool _gaussianNoiseTool = new();
 
     [ObservableProperty] private bool _hasImage;
     partial void OnHasImageChanged(bool value) {
@@ -67,26 +68,27 @@ public partial class MainWindowViewModel : ObservableObject {
     }
     
     [RelayCommand(CanExecute = nameof(HasImage))] private void FlipHorizontal() {
+        ActiveTool = null;
         _rawOutput = ImageProcessing.FlipHorizontal(_rawInput);
         ImgOutput = _rawOutput.ToImageSource();
     }
 
     [RelayCommand(CanExecute = nameof(HasImage))] private void GaussianNoise() {
-        _rawOutput = ImageProcessing.GaussianNoise(_rawInput, 30, out var noiseMask);
+        _rawOutput = ImageProcessing.GaussianNoise(_rawInput, _gaussianNoiseTool.Sigma , out var noiseMask);
         ImgOutput = _rawOutput.ToImageSource();
     }
 
     [RelayCommand(CanExecute = nameof(HasImage))] private void SaltPepperNoise() { 
-        _rawOutput = ImageProcessing.SaltPepperNoise(_rawInput, _noiseTool.Probability, out var _);
+        _rawOutput = ImageProcessing.SaltPepperNoise(_rawInput, _saltNoiseTool.Probability, out var _);
         ImgOutput = _rawOutput.ToImageSource();
     }
 
-    [RelayCommand] private void OpenNoiseTool() => ActiveTool = _noiseTool;
+    [RelayCommand] private void OpenSaltPepperNoiseTool() => ActiveTool = _saltNoiseTool;
+    [RelayCommand] private void OpenGaussianNoiseTool() => ActiveTool = _gaussianNoiseTool;
     [RelayCommand] private void ClearToolPanel() => ActiveTool = null;    
 
     [RelayCommand(CanExecute = nameof(HasImage))] private void HistogramEqualize() {
-        _rawOutput = ImageProcessing.EqualizeForFullColor(_rawInput);
-        //_rawOutput = ImageProcessing.EqualizeForGrayscale(_rawInput);
+        _rawOutput = ImageProcessing.HistogramEqualize(_rawInput);
         ImgOutput = _rawOutput.ToImageSource();
     }
     

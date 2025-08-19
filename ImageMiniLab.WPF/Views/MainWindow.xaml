@@ -8,14 +8,20 @@
         mc:Ignorable="d"
         Title="Image Mini Lab" Height="450" Width="800">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type tools:NoiseTool}">
-            <StackPanel Name="SecondToolbar" Orientation="Horizontal">
+        <DataTemplate DataType="{x:Type tools:SaltPepperNoiseTool}">
+            <StackPanel Name="SaltNoiseToolbar" Orientation="Horizontal">
                 <TextBlock Text="雜訊機率(%)" VerticalAlignment="Center" />
-                <TextBox Text="{Binding Probability, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Width="100" VerticalAlignment="Center"/>
-                <Slider Value="{Binding Probability, Mode=TwoWay}" Margin="10 0 10 0" Width="200" Minimum="0" Maximum="100"  TickFrequency="1"/>
-                <Button Content="Apply" 
-                        Command="{Binding DataContext.SaltPepperNoiseCommand , RelativeSource={RelativeSource AncestorType=Window}}" 
-                         />
+                <TextBox Text="{Binding Probability, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Width="50" TextAlignment="Center"  VerticalAlignment="Center" />
+                <Slider Value="{Binding Probability, Mode=TwoWay}" Margin="10 0 10 0" Width="100" Minimum="0" Maximum="100"  TickFrequency="1" VerticalAlignment="Center"/>
+                <Button Content="Apply" Command="{Binding DataContext.SaltPepperNoiseCommand , RelativeSource={RelativeSource AncestorType=Window}}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type tools:GaussianNoiseTool}">
+            <StackPanel Name="GaussianNoiseToolbar" Orientation="Horizontal">
+                <TextBlock Text="Sigma" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Sigma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Width="50" TextAlignment="Center" VerticalAlignment="Center" />
+                <Slider Value="{Binding Sigma, Mode=TwoWay}" Margin="10 0 0 0" Width="100" Minimum="0" Maximum="255" TickFrequency="1" VerticalAlignment="Center" />
+                <Button Content="Apply" Command="{Binding DataContext.GaussianNoiseCommand , RelativeSource={RelativeSource AncestorType=Window}}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -62,10 +68,10 @@
             <Button Command="{Binding GrayscaleAverageCommand}" ToolTip="灰階" Margin="0 0 5 0">
                 <Image Source="/Assets/gray.png" Height="24"/>
             </Button>
-            <Button Command="{Binding GaussianNoiseCommand}" ToolTip="高斯雜訊" Margin="0 0 5 0">
+            <Button Command="{Binding OpenGaussianNoiseToolCommand}" ToolTip="高斯雜訊" Margin="0 0 5 0">
                 <Image Source="/Assets/blur.png" Height="24"/>
             </Button>
-            <Button Command="{Binding OpenNoiseToolCommand}" ToolTip="椒鹽雜訊" Margin="0 0 5 0">
+            <Button Command="{Binding OpenSaltPepperNoiseToolCommand}" ToolTip="椒鹽雜訊" Margin="0 0 5 0">
                 <Image Source="/Assets/pepper.png" Height="24"/>
             </Button>
             <Button Command="{Binding HistogramEqualizeCommand}" ToolTip="直方圖均衡" Margin="0 0 5 0">
