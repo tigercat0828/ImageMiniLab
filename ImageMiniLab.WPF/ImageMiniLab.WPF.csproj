@@ -14,14 +14,18 @@
     <None Remove="Assets\flipX.png" />
     <None Remove="Assets\flipY.png" />
     <None Remove="Assets\gray.png" />
+    <None Remove="Assets\histo.png" />
     <None Remove="Assets\icon_flipX.png" />
     <None Remove="Assets\icon_flipY.png" />
     <None Remove="Assets\pepper.png" />
+    <None Remove="Assets\roate_right.png" />
+    <None Remove="Assets\rotate_left.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+    <PackageReference Include="ScottPlot.WPF" Version="5.0.55" />
     <PackageReference Include="SkiaSharp" Version="3.119.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
   </ItemGroup>
@@ -39,7 +43,16 @@
     <Resource Include="Assets\gray.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\histo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\pepper.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\roate_right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\rotate_left.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnIoc", "LearnIoc\LearnI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageMiniLab.WPF", "ImageMiniLab.WPF\ImageMiniLab.WPF.csproj", "{6D8142D8-A560-43AF-AB44-75759B6A55A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearnWPF", "LearnWPF\LearnWPF.csproj", "{FD5A5FA6-4F76-46B8-A709-1E9334C53456}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6D8142D8-A560-43AF-AB44-75759B6A55A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D8142D8-A560-43AF-AB44-75759B6A55A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D8142D8-A560-43AF-AB44-75759B6A55A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD5A5FA6-4F76-46B8-A709-1E9334C53456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5A5FA6-4F76-46B8-A709-1E9334C53456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5A5FA6-4F76-46B8-A709-1E9334C53456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5A5FA6-4F76-46B8-A709-1E9334C53456}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
