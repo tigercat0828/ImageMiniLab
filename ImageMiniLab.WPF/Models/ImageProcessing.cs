@@ -1,14 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using System;
+﻿using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows.Documents;
-using System.Windows.Markup.Localizer;
-using System.Diagnostics;
-using ScottPlot;
-using System.Numerics;
-using System.Windows.Media.Imaging;
-using System.Runtime.ExceptionServices;
-using OpenTK.Graphics.OpenGL;
+using System.Security.AccessControl;
 
 namespace ImageMiniLab.WPF.Models;
 public static class ImageProcessing {
@@ -53,20 +46,20 @@ public static class ImageProcessing {
         });
         return output;
     }
-    public static unsafe RawImage RotateRight(RawImage input) { 
-     
-        int width = input.Width; 
-        int height = input.Height; 
+    public static unsafe RawImage RotateRight(RawImage input) {
+
+        int width = input.Width;
+        int height = input.Height;
         var output = new RawImage(height, width);
         fixed (byte* src = input.Pixels)
         fixed (byte* dst = output.Pixels) {
             uint* s = (uint*)src;
             uint* d = (uint*)dst;
-            Parallel.For(0, height, y => { 
-            
-                for(int x =0; x < width; x++) {
+            Parallel.For(0, height, y => {
+
+                for (int x = 0; x < width; x++) {
                     int si = (y * width + x);
-                    
+
                     int dstX = height - 1 - y;
                     int dstY = x;
 
@@ -119,7 +112,7 @@ public static class ImageProcessing {
         return output;
     }
     public static RawImage FlipHorizontal(RawImage input) {
-      int w = input.Width;
+        int w = input.Width;
         int h = input.Height;
         RawImage output = new(w, h);
         byte[] srcPixels = input.Pixels;
@@ -154,7 +147,7 @@ public static class ImageProcessing {
         fixed (byte* dst = output.Pixels) {
             uint* m = (uint*)msk;
             uint* d = (uint*)dst;
-            Parallel.For(0, input.Length, i => {
+            Parallel.For(0, input.PixelCount, i => {
                 int rand = Random.Shared.Next(0, 100);
                 if (rand <= prob) {
                     m[i] = BLACK;
@@ -237,7 +230,7 @@ public static class ImageProcessing {
     public static RawImage HistogramEqualize(RawImage input) {
         // build histogram
         int[] hist = new int[256];
-        for (int i = 0; i < input.Length*4; i+=4) {
+        for (int i = 0; i < input.PixelCount * 4; i += 4) {
             // RGB -> YCbCr
             int b = input[i + 0];
             int g = input[i + 1];
@@ -266,8 +259,8 @@ public static class ImageProcessing {
             map[i] = m;
         }
         // retrieve map value
-        RawImage output = new (input.Width, input.Height);
-        for (int i = 0; i < input.Length * 4; i += 4) {
+        RawImage output = new(input.Width, input.Height);
+        for (int i = 0; i < input.PixelCount * 4; i += 4) {
             int b = input[i + 0];
             int g = input[i + 1];
             int r = input[i + 2];
@@ -285,6 +278,236 @@ public static class ImageProcessing {
         }
 
         return output;
+    }
+    public static RawImage Mosaic(RawImage input, int cellSize) {
+
+        if (cellSize > input.Width || cellSize > input.Height || cellSize < 2) return new(input);
+        int width = input.Width;
+        int height = input.Height;
+        RawImage output = new(width, height);
+
+        int rows = (int)Math.Ceiling(height / (float)cellSize);
+        int cols = (int)Math.Ceiling(width / (float)cellSize);
+
+        Parallel.For(0, rows, r => {
+            for (int c = 0; c < cols; c++) {
+                int startX = c * cellSize;
+                int endX = Math.Min(startX + cellSize, width);
+                int startY = r * cellSize;
+                int endY = Math.Min(startY + cellSize, height);
+
+                (int avgR, int avgG, int avgB) = AverageBrightness(input, startX, endX, startY, endY);
+
+                // 填滿這個 block
+                for (int y = startY; y < endY; y++) {
+                    for (int x = startX; x < endX; x++) {
+                        int index = (y * width + x) * 4;
+                        output[index + 0] = (byte)avgB;
+                        output[index + 1] = (byte)avgG;
+                        output[index + 2] = (byte)avgR;
+                        output[index + 3] = input[index + 3]; // alpha 固定為不透明
+                    }
+                }
+            }
+        });
+        return output;
+    }
+    public static RawImage ScaleBilinearInterpolation(RawImage input, double factor) {
+
+        if (factor < 0) return new RawImage(input);
+        int newWidth = (int)(input.Width * factor);
+        int newHeight = (int)(input.Height * factor);
+        int srcWidth = input.Width;
+        int srcHeight = input.Height;
+
+        RawImage output = new(newWidth, newHeight);
+
+        Parallel.For(0, newHeight, ny => {                  // newY
+            double srcY = ny / factor;
+            int y1 = (int)srcY;
+            int y2 = Math.Min(y1 + 1, input.Height - 1);
+            double dy = srcY - y1;
+
+            for (int nx = 0; nx < newWidth; nx++) {         // newX
+                double srcX = nx / factor;
+                int x1 = (int)srcX;
+                int x2 = Math.Min(x1 + 1, input.Width - 1);
+                double dx = srcX - x1;
+
+                int i11 = (y1 * srcWidth + x1) * 4;
+                int i12 = (y1 * srcWidth + x2) * 4;
+                int i21 = (y2 * srcWidth + x1) * 4;
+                int i22 = (y2 * srcWidth + x2) * 4;
+
+                int index = (ny * newWidth + nx) * 4;    // dst index
+                output[index + 0] = (byte)BilinearInterpolate(input[i11 + 0], input[i12 + 0], input[i21 + 0], input[i22 + 0], dx, dy);  // B
+                output[index + 1] = (byte)BilinearInterpolate(input[i11 + 1], input[i12 + 1], input[i21 + 1], input[i22 + 1], dx, dy);  // G
+                output[index + 2] = (byte)BilinearInterpolate(input[i11 + 2], input[i12 + 2], input[i21 + 2], input[i22 + 2], dx, dy);  // R
+                output[index + 3] = (byte)BilinearInterpolate(input[i11 + 3], input[i12 + 3], input[i21 + 3], input[i22 + 3], dx, dy);  // A
+            }
+        });
+        return output;
+    }
+    public static RawImage ConvolutionFullColor(RawImage input, MaskKernel mask) {
+        int kernelSize = mask.Size;
+        int kernelOffset = kernelSize / 2;
+        int width = input.Width;
+        int height = input.Height;
+        RawImage output = new(width, height);
+
+        Parallel.For(0, height, y => {
+            for (int x = 0; x < width; x++) {
+
+                float sumB = 0, sumG = 0, sumR = 0;
+
+                for (int i = -kernelOffset; i <= kernelOffset; i++) {
+                    for (int j = -kernelOffset; j <= kernelOffset; j++) {
+                        int pX = Math.Clamp(x + i, 0, width - 1);
+                        int pY = Math.Clamp(y + j, 0, height - 1);
+                        int pIndex = (pY * width + pX) * 4;
+
+                        float kernelValue = mask[i + kernelOffset][j + kernelOffset];
+
+                        sumB += input[pIndex + 0] * kernelValue;
+                        sumG += input[pIndex + 1] * kernelValue;
+                        sumR += input[pIndex + 2] * kernelValue;
+                    }
+                }
+                int index = (y * width + x) * 4;
+                output[index + 0] = (byte)Math.Clamp(sumB / mask.Scalar, 0, 255);
+                output[index + 1] = (byte)Math.Clamp(sumG / mask.Scalar, 0, 255);
+                output[index + 2] = (byte)Math.Clamp(sumR / mask.Scalar, 0, 255);
+                output[index + 3] = input[index + 3];
+            }
+        });
+        return output;
+    }
+    public static RawImage ConvolutionGrayscale(RawImage input, MaskKernel mask) {
+        int kernelOffset = mask.Size / 2;
+        int width = input.Width;
+        int height = input.Height;
+        RawImage output = new(width, height);
+
+        Parallel.For(0, height, y => {
+            for (int x = 0; x < width; x++) {
+                float gray = 0.0f;
+
+                for (int i = -kernelOffset; i <= kernelOffset; i++) {
+                    for (int j = -kernelOffset; j <= kernelOffset; j++) {
+                        int pX = Math.Clamp(x + i, 0, width - 1);
+                        int pY = Math.Clamp(y + j, 0, height - 1);
+                        int pIndex = (pY * width + pX) * 4;
+                        float kernelValue = mask[i + kernelOffset][j + kernelOffset];
+                        gray += (input[pIndex] & 0xFF) * kernelValue;
+                    }
+                }
+                int index = (y * width + x) * 4;
+                byte grayScale = (byte)Math.Clamp(gray / mask.Scalar, 0, 255);
+                output[index + 0] = grayScale;
+                output[index + 1] = grayScale;
+                output[index + 2] = grayScale;
+                output[index + 3] = input[index + 3];
+            }
+        });
+        return output;
+    }
+    public static RawImage Reverse(RawImage input) {
+        RawImage output = new(input);
+        for (int i = 0; i < input.PixelCount * 4; i += 4) {
+            output[i + 0] = (byte)(255 - input[i + 0]);
+            output[i + 1] = (byte)(255 - input[i + 1]);
+            output[i + 2] = (byte)(255 - input[i + 2]);
+        }
+        return output;
+    }
+    public static RawImage Smooth(RawImage input) {
+        MaskKernel smoothMask = MaskKernel.LoadPreBuiltMask(DefaultMask.GaussianSmooth);
+        return ConvolutionFullColor(input, smoothMask);
+    }
+    public static RawImage EdgeDetection(RawImage input) {
+        // Canny Edge Detection 
+        // Step 1: Smooth
+        RawImage grayscale = GrayScaleWeighted(input);
+        RawImage smooth = Smooth(grayscale);
+        // Step 2: Calculate Gradient
+        MaskKernel sobelXmask = MaskKernel.LoadPreBuiltMask(DefaultMask.SobelX);
+        MaskKernel sobelYmask = MaskKernel.LoadPreBuiltMask(DefaultMask.SobelY);
+        RawImage sobelXimage = ConvolutionGrayscale(smooth, sobelXmask);
+        RawImage sobelYimage = ConvolutionGrayscale(smooth, sobelYmask);
+
+        Func<byte, byte, byte> grad = (gx, gy) =>
+        {
+            int dx = gx - 128; // 補回負數方向，因為原本被壓成 0~255
+            int dy = gy - 128;
+            double g = Math.Sqrt(dx * dx + dy * dy);
+            return (byte)Math.Clamp(g, 0, 255);
+        };
+
+        RawImage gradientData = OverlayCalculate(sobelXimage, sobelYimage, grad);
+        return gradientData;
+        // return Reverse(gradientData);
+    }
+    public static RawImage OverlayCalculate(RawImage input1, RawImage input2, Func<byte, byte, byte> func) {
+
+        if (input1.Width != input2.Width || input1.Height != input2.Height) {
+            return null!;
+        }
+        int width = input1.Width;
+        int height = input1.Height;
+        int length = input1.PixelCount;
+        RawImage output = new(width, height);
+
+        Parallel.For(0, length, i => {
+
+            int index = i * 4;
+            output[index + 0] = func(input1[index + 0], input2[index + 0]);
+            output[index + 1] = func(input1[index + 1], input2[index + 1]);
+            output[index + 2] = func(input1[index + 2], input2[index + 2]);
+            output[index + 3] = 255;
+        });
+
+        return output;
+    }
+    public static RawImage BlueChannel(RawImage input) => GetChannel(input, 0);
+    public static RawImage GreenChannel(RawImage input) => GetChannel(input, 1);
+    public static RawImage RedChannel(RawImage input) => GetChannel(input, 2); 
+    private static RawImage GetChannel(RawImage input, int channel) { 
+        RawImage output = new(input.Width, input.Height);
+        Parallel.For(0, input.PixelCount, i=> { 
+            int index = i * 4;
+            output[index +0] = input[index + channel];
+            output[index + 1] = input[index + channel];
+            output[index + 2] = input[index + channel];
+            output[index + 3] = input[index + 3]; 
+        });
+        return output;
+    }
+    // tool method 
+    private static double BilinearInterpolate(float v11, float v12, float v21, float v22, double dx, double dy) {
+        double value =
+            (1 - dx) * (1 - dy) * v11 +
+            dx * (1 - dy) * v12 +
+            (1 - dx) * dy * v21 +
+            dx * dy * v22;
+        return value;
+    }
+    private static (int, int, int) AverageBrightness(RawImage input, int startX, int endX, int startY, int endY) {
+        int totalR = 0, totalG = 0, totalB = 0, count = 0;
+
+        for (int y = startY; y < endY; y++) {
+            for (int x = startX; x < endX; x++) {
+                int index = (y * input.Width + x) * 4;
+                byte b = input[index + 0];
+                byte g = input[index + 1];
+                byte r = input[index + 2];
+                totalR += r;
+                totalG += g;
+                totalB += b;
+                count++;
+            }
+        }
+
+        return (totalR / count, totalG / count, totalB / count);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

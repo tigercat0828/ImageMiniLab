@@ -1,6 +1,5 @@
 ﻿using SkiaSharp;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -8,11 +7,11 @@ namespace ImageMiniLab.WPF.Models;
 public class RawImage {
     public int Width { get; private set; }
     public int Height { get; private set; }
-    public int Length => Width * Height;
-    
+    public int PixelCount => Width * Height;
+
     public byte[] Pixels;
 
-    public byte this[int index] { 
+    public byte this[int index] {
         get { return Pixels[index]; }
         set { Pixels[index] = value; }
     }
@@ -29,6 +28,13 @@ public class RawImage {
         Width = image.Width;
         Height = image.Height;
         Pixels = [.. image.Pixels];
+    }
+    public RawImage Clone() {
+        return new RawImage {
+            Width = Width,
+            Height = Height,
+            Pixels = Pixels
+        };
     }
     public unsafe void LoadFile(string filename) {
 

@@ -7,6 +7,14 @@
         xmlns:tools="clr-namespace:ImageMiniLab.WPF.ViewModels.Tools"
         mc:Ignorable="d"
         Title="Image Mini Lab" Height="450" Width="800">
+    
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}"/>
+        <KeyBinding Gesture="Ctrl+Shift+Z" Command="{Binding RedoCommand}"/>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding LoadImageCommand}"/>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveImageCommand}"/>
+    </Window.InputBindings>
+    
     <Window.Resources>
         <DataTemplate DataType="{x:Type tools:SaltPepperNoiseTool}">
             <StackPanel Name="SaltNoiseToolbar" Orientation="Horizontal">
@@ -21,24 +29,42 @@
                 <TextBlock Text="Sigma" VerticalAlignment="Center" />
                 <TextBox Text="{Binding Sigma, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" Width="50" TextAlignment="Center" VerticalAlignment="Center" />
                 <Slider Value="{Binding Sigma, Mode=TwoWay}" Margin="10 0 0 0" Width="100" Minimum="0" Maximum="255" TickFrequency="1" VerticalAlignment="Center" />
-                <Button Content="Apply" Command="{Binding DataContext.GaussianNoiseCommand , RelativeSource={RelativeSource AncestorType=Window}}" />
+                <Button Content="Apply" 
+                        Command="{Binding DataContext.GaussianNoiseCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type tools:MosaicTool}">
+            <StackPanel Name="MosaicToolbar" Orientation="Horizontal">
+                <TextBlock Text="區塊大小" VerticalAlignment="Center" />
+                <TextBox Text="{Binding CellSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 5 0" Width="50" TextAlignment="Center" VerticalAlignment="Center" />
+                <Button Content="Apply" 
+                        Command="{Binding DataContext.MosaicCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type tools:ScaleTool}">
+            <StackPanel Name="ScaleToolbar" Orientation="Horizontal">
+                <TextBlock Text="縮放倍率" VerticalAlignment="Center" />
+                <TextBox Text="{Binding ScaleFactor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 3 0" Width="50" TextAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="%" VerticalAlignment="Center" />
+                <Button Content="Apply" Margin="5 0 0 0"
+                        Command="{Binding DataContext.ScaleCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" >
             <MenuItem Header="檔案(_F)">
-                <MenuItem Header="開啟(_O)" Command="{Binding LoadImageCommand}" />
-                <MenuItem Header="儲存(_S)" Command="{Binding SaveImageCommand}" />
+                <MenuItem Header="開啟(_O)" Command="{Binding LoadImageCommand}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="儲存(_S)" Command="{Binding SaveImageCommand}" InputGestureText="Ctrl+S" />
                 <Separator />
                 <MenuItem Header="離開(_E)" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="編輯(_E)">
-                <MenuItem Header="復原(_U)"  />
-                <MenuItem Header="重作(_R)"  />
+                <MenuItem Header="復原(_U)" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z" />
+                <MenuItem Header="重作(_R)" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Shift+Z" />
             </MenuItem>
             <MenuItem Header="分析(_A)">
-                <MenuItem />
+                <MenuItem Header="直方圖" Command="{Binding OpenHistogramDialogCommand}"/>
             </MenuItem>
         </Menu>
 
@@ -53,10 +79,10 @@
         </StatusBar>
         
         <StackPanel Name="MainToolbar" Orientation="Horizontal" DockPanel.Dock="Top" Margin="5 3 0 0" >
-            <Button Command="{Binding FlipVerticalCommand}" ToolTip="逆時鐘旋轉" Margin="0 0 5 0">
+            <Button Command="{Binding RotateLeftCommand}" ToolTip="逆時鐘旋轉" Margin="0 0 5 0">
                 <Image Source="/Assets/rotate_left.png" Height="24"/>
             </Button>
-            <Button Command="{Binding FlipHorizontalCommand}" ToolTip="順時鐘旋轉" Margin="0 0 5 0">
+            <Button Command="{Binding RotateRightCommand}" ToolTip="順時鐘旋轉" Margin="0 0 5 0">
                 <Image Source="/Assets/roate_right.png" Height="24"/>
             </Button>
             <Button Command="{Binding FlipHorizontalCommand}" ToolTip="水平翻轉" Margin="0 0 5 0">
@@ -68,6 +94,9 @@
             <Button Command="{Binding GrayscaleAverageCommand}" ToolTip="灰階" Margin="0 0 5 0">
                 <Image Source="/Assets/gray.png" Height="24"/>
             </Button>
+            <Button Command="{Binding OpenScaleToolCommand}" ToolTip="縮放" Margin="0 0 5 0">
+                <Image Source="/Assets/scale.png" Height="24"/>
+            </Button>
             <Button Command="{Binding OpenGaussianNoiseToolCommand}" ToolTip="高斯雜訊" Margin="0 0 5 0">
                 <Image Source="/Assets/blur.png" Height="24"/>
             </Button>
@@ -77,6 +106,23 @@
             <Button Command="{Binding HistogramEqualizeCommand}" ToolTip="直方圖均衡" Margin="0 0 5 0">
                 <Image Source="/Assets/histo.png" Height="24"/>
             </Button>
+            <Button Command="{Binding OpenMosaicToolCommand}" ToolTip="馬賽克" Margin="0 0 5 0">
+                <Image Source="/Assets/mosaic.png" Height="24" />
+            </Button>
+            <Button Command="{Binding SmoothCommand}" ToolTip="平滑化" Margin="0 0 5 0">
+                <Image Source="/Assets/smooth.png" Height="24" />
+            </Button>
+            <Button Command="{Binding EdgeDetectionCommand}" ToolTip="邊緣偵測" Margin="0 0 5 0">
+                <Image Source="/Assets/edge.png" Height="24" />
+            </Button>
+            <Button Command="{Binding OpenConvolutionMaskDialogCommand}" ToolTip="卷積運算" Margin="0 0 5 0">
+                <Image Source="/Assets/convolution.png" Height="24" />
+            </Button>
+
+            <!--<Button Command="{Binding TestMethodCommand}" ToolTip="馬賽克" Margin="0 0 5 0">
+                <Image Source="/Assets/mosaic.png" Height="24" />
+            </Button>-->
+
         </StackPanel>
         
         <!-- Secondary Toolbar -->
@@ -95,15 +141,11 @@
         </Border>
 
 
-        <Grid Margin="0 5 0 5">
+        <Grid Margin="0 2 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border BorderBrush="Gray" BorderThickness="1" Margin="5 0 5 0"  Grid.Column="0">
-                <Image Source="{Binding ImgInput}" Stretch="Uniform"/>
-            </Border>
-            <Border BorderBrush="Gray" BorderThickness="1" Margin="0 0 5 0" Grid.Column="1">
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="5">
                 <Image Source="{Binding ImgOutput}" Stretch="Uniform" />
             </Border>
         </Grid>

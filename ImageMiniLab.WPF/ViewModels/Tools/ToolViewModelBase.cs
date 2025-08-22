@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 
-namespace ImageMiniLab.WPF.ViewModels.Tools; 
-public class ToolViewModelBase : ObservableObject
-{
+namespace ImageMiniLab.WPF.ViewModels.Tools;
+public class ToolViewModelBase : ObservableObject {
 
 }

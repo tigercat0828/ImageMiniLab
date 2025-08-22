@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace ImageMiniLab.WPF.Views; 
+/// <summary>
+/// ConvolutioMaskDialog.xaml 的互動邏輯
+/// </summary>
+public partial class ConvolutioMaskDialog : Window {
+
+    private TextBox[,] maskCells = new TextBox[5, 5];
+    public string KernelSize = "3x3"; // 預設值
+    private int currentSize = 3;
+    public float[] ResultMask { get; private set; }
+    public ConvolutioMaskDialog() {
+        InitializeComponent();
+        BuildMaskTextBoxGrid(3);
+    }
+
+    private void Ok_Click(object sender, RoutedEventArgs e) {
+        List<float> values = [];
+        foreach (var tb in maskCells) {
+            if (float.TryParse(tb.Text, out float v))
+                values.Add(v);
+            else
+                values.Add(0);
+        }
+        ResultMask = [.. values];
+        DialogResult = true;
+        Close();
+    }
+
+    private void BuildMaskTextBoxGrid(int size) {
+        MaskGrid.Children.Clear();
+        MaskGrid.Rows = size;
+        MaskGrid.Columns = size;
+
+        maskCells = new TextBox[size, size];
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                var tb = new TextBox {
+                    Text = "0",
+                    Margin = new Thickness(2),
+                    FontSize = 16,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
+                maskCells[i, j] = tb;
+                MaskGrid.Children.Add(tb);
+            }
+        }
+    }
+
+    private void KernelSize_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        if (sender is ComboBox cb && cb.SelectedItem is ComboBoxItem item) {
+            string sizeStr = item.Content.ToString() ?? "3x3";
+            currentSize = sizeStr == "5x5" ? 5 : 3;
+            BuildMaskTextBoxGrid(currentSize);
+        }
+    }
+}

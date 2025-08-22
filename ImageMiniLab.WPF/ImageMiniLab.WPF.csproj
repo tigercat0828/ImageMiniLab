@@ -11,15 +11,32 @@
 
   <ItemGroup>
     <None Remove="Assets\blur.png" />
+    <None Remove="Assets\convolution.png" />
+    <None Remove="Assets\edge.png" />
     <None Remove="Assets\flipX.png" />
     <None Remove="Assets\flipY.png" />
     <None Remove="Assets\gray.png" />
     <None Remove="Assets\histo.png" />
     <None Remove="Assets\icon_flipX.png" />
     <None Remove="Assets\icon_flipY.png" />
+    <None Remove="Assets\mosaic.png" />
     <None Remove="Assets\pepper.png" />
     <None Remove="Assets\roate_right.png" />
     <None Remove="Assets\rotate_left.png" />
+    <None Remove="Assets\scale.png" />
+    <None Remove="Assets\smooth.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\convolution.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\edge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\mosaic.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +70,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\rotate_left.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\scale.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\smooth.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
