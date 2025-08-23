@@ -1,7 +1,5 @@
-﻿using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Security.AccessControl;
 
 namespace ImageMiniLab.WPF.Models;
 public static class ImageProcessing {
@@ -435,8 +433,7 @@ public static class ImageProcessing {
         RawImage sobelXimage = ConvolutionGrayscale(smooth, sobelXmask);
         RawImage sobelYimage = ConvolutionGrayscale(smooth, sobelYmask);
 
-        Func<byte, byte, byte> grad = (gx, gy) =>
-        {
+        Func<byte, byte, byte> grad = (gx, gy) => {
             int dx = gx - 128; // 補回負數方向，因為原本被壓成 0~255
             int dy = gy - 128;
             double g = Math.Sqrt(dx * dx + dy * dy);
@@ -470,18 +467,17 @@ public static class ImageProcessing {
     }
     public static RawImage BlueChannel(RawImage input) => GetChannel(input, 0);
     public static RawImage GreenChannel(RawImage input) => GetChannel(input, 1);
-    public static RawImage RedChannel(RawImage input) => GetChannel(input, 2); 
-    private static RawImage GetChannel(RawImage input, int channel) { 
+    public static RawImage RedChannel(RawImage input) => GetChannel(input, 2);
+    private static RawImage GetChannel(RawImage input, int channel) {
         RawImage output = new(input.Width, input.Height);
-        Parallel.For(0, input.PixelCount, i=> { 
+        Parallel.For(0, input.PixelCount, i => {
             int index = i * 4;
-            output[index +0] = input[index + channel];
-            output[index + 1] = input[index + channel];
-            output[index + 2] = input[index + channel];
-            output[index + 3] = input[index + 3]; 
+            output[index + channel] = input[index + channel];
+            output[index + 3] = input[index + 3];
         });
         return output;
     }
+
     // tool method 
     private static double BilinearInterpolate(float v11, float v12, float v21, float v22, double dx, double dy) {
         double value =

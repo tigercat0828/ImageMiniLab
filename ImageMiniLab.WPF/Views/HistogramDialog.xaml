@@ -22,20 +22,20 @@
             <Image Source="{Binding RedChannelImageSource}" />
         </Border>
         <Border Grid.Row="0" Grid.Column="1">
-            <Image Source="/Assets/convolution.png" />
+            <Image Source="{Binding GreenChannelImageSource}" />
         </Border>
         <Border Grid.Row="0" Grid.Column="2">
-            <Image Source="/Assets/convolution.png" />
+            <Image Source="{Binding BlueChannelImageSource}" />
         </Border>
 
         <Border Grid.Row="1" Grid.Column="0">
-            <ScottPlot:WpfPlot Name="RedChannel_Histogram"/>
+            <ScottPlot:WpfPlot x:Name="RedChannel_Histogram"/>
         </Border>
         <Border Grid.Row="1" Grid.Column="1">
-            <ScottPlot:WpfPlot Name="GreenChannel_Histogram"/>
+            <ScottPlot:WpfPlot x:Name="GreenChannel_Histogram"/>
         </Border>
         <Border Grid.Row="2" Grid.Column="2">
-            <ScottPlot:WpfPlot Name="BlueChannel_Histogram"/>
+            <ScottPlot:WpfPlot x:Name="BlueChannel_Histogram"/>
         </Border>
     </Grid>
 </Window>

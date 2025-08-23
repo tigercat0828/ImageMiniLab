@@ -25,13 +25,13 @@ public partial class MainWindowViewModel : ObservableObject {
     private void PushHistory() {
         _undoStack.Push(_rawOutput.Clone());
         _redoStack.Clear();
-        UpdateUndoRedoState();  
+        UpdateUndoRedoState();
     }
-    private void UpdateUndoRedoState() { 
+    private void UpdateUndoRedoState() {
         CanRedo = _redoStack.Count > 0;
         CanUndo = _undoStack.Count > 0;
     }
-    
+
     [RelayCommand(CanExecute = nameof(CanUndo))]
     private void Undo() {
         _redoStack.Push(_rawOutput.Clone());
@@ -41,13 +41,13 @@ public partial class MainWindowViewModel : ObservableObject {
     }
 
     [RelayCommand(CanExecute = nameof(CanRedo))]
-    private void Redo() { 
+    private void Redo() {
         _undoStack.Push(_rawOutput.Clone());
         _rawOutput = _undoStack.Pop();
         ImgOutput = _rawOutput.ToImageSource();
         UpdateUndoRedoState();
     }
-    
+
     // status bar
     [ObservableProperty] private string _imageSizeText = "請載入圖片...";
     [ObservableProperty] private string _imageFilename = "Unknown";
@@ -57,7 +57,7 @@ public partial class MainWindowViewModel : ObservableObject {
     [ObservableProperty] private BitmapSource? _imgOutput;
 
     // tool 
-    [ObservableProperty] private ToolViewModelBase? _activeTool; 
+    [ObservableProperty] private ToolViewModelBase? _activeTool;
     private readonly SaltPepperNoiseTool _saltNoiseTool = new();
     private readonly GaussianNoiseTool _gaussianNoiseTool = new();
     private readonly MosaicTool _mosaicTool = new();
@@ -102,11 +102,11 @@ public partial class MainWindowViewModel : ObservableObject {
         var dialog = new ConvolutioMaskDialog() {
             Owner = Application.Current.MainWindow
         };
-        if(dialog.ShowDialog() == true) {
+        if (dialog.ShowDialog() == true) {
             float[] mask = dialog.ResultMask;
             MaskKernel maskKernel = new(mask);
             PushHistory();
-            _rawOutput =  ImageProcessing.ConvolutionFullColor(_rawOutput, maskKernel);
+            _rawOutput = ImageProcessing.ConvolutionFullColor(_rawOutput, maskKernel);
             ImgOutput = _rawOutput.ToImageSource();
         }
     }
@@ -118,7 +118,7 @@ public partial class MainWindowViewModel : ObservableObject {
         ImgOutput = _rawOutput.ToImageSource();
     }
 
-    [RelayCommand (CanExecute = nameof(HasImage))]
+    [RelayCommand(CanExecute = nameof(HasImage))]
     private void Smooth() {
         PushHistory();
         _rawOutput = ImageProcessing.Smooth(_rawOutput);
