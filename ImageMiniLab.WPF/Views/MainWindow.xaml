@@ -50,18 +50,39 @@
                         Command="{Binding DataContext.ScaleCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
             </StackPanel>
         </DataTemplate>
+        
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" >
             <MenuItem Header="檔案(_F)">
-                <MenuItem Header="開啟(_O)" Command="{Binding LoadImageCommand}" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="儲存(_S)" Command="{Binding SaveImageCommand}" InputGestureText="Ctrl+S" />
+                <MenuItem Header="開啟(_O)" Command="{Binding LoadImageCommand}" InputGestureText="Ctrl+O">
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/load.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="儲存(_S)" Command="{Binding SaveImageCommand}" InputGestureText="Ctrl+S">
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/save.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="離開(_E)" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="離開(_E)" Command="{Binding ExitCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/exit.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="編輯(_E)">
-                <MenuItem Header="復原(_U)" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z" />
-                <MenuItem Header="重作(_R)" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Shift+Z" />
+                <MenuItem Header="復原(_U)" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z" >
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/undo.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="重作(_R)" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Shift+Z" >
+                    <MenuItem.Icon>
+                        <Image Source="/Assets/redo.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="分析(_A)">
                 <MenuItem Header="直方圖" Command="{Binding OpenHistogramDialogCommand}"/>
@@ -118,11 +139,6 @@
             <Button Command="{Binding OpenConvolutionMaskDialogCommand}" ToolTip="卷積運算" Margin="0 0 5 0">
                 <Image Source="/Assets/convolution.png" Height="24" />
             </Button>
-
-            <!--<Button Command="{Binding TestMethodCommand}" ToolTip="馬賽克" Margin="0 0 5 0">
-                <Image Source="/Assets/mosaic.png" Height="24" />
-            </Button>-->
-
         </StackPanel>
         
         <!-- Secondary Toolbar -->
@@ -140,7 +156,7 @@
             </ContentControl>
         </Border>
 
-
+        <!--Working Image-->
         <Grid Margin="0 2 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

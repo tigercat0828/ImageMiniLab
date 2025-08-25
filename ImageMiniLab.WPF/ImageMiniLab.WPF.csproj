@@ -13,18 +13,23 @@
     <None Remove="Assets\blur.png" />
     <None Remove="Assets\convolution.png" />
     <None Remove="Assets\edge.png" />
+    <None Remove="Assets\exit.png" />
     <None Remove="Assets\flipX.png" />
     <None Remove="Assets\flipY.png" />
     <None Remove="Assets\gray.png" />
     <None Remove="Assets\histo.png" />
     <None Remove="Assets\icon_flipX.png" />
     <None Remove="Assets\icon_flipY.png" />
+    <None Remove="Assets\load.png" />
     <None Remove="Assets\mosaic.png" />
     <None Remove="Assets\pepper.png" />
+    <None Remove="Assets\redo.png" />
     <None Remove="Assets\roate_right.png" />
     <None Remove="Assets\rotate_left.png" />
+    <None Remove="Assets\save.png" />
     <None Remove="Assets\scale.png" />
     <None Remove="Assets\smooth.png" />
+    <None Remove="Assets\undo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +37,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\edge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\exit.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\load.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\mosaic.png">
@@ -66,16 +77,25 @@
     <Resource Include="Assets\pepper.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\redo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\roate_right.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\rotate_left.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\save.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\scale.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\smooth.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\undo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
