@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageMiniLab.WPF.Views"
         mc:Ignorable="d"
-        Title="輸入卷積Mask" Height="400" Width="400"
+        Title="輸入卷積Mask" Height="300" Width="300"
         ResizeMode="NoResize"
         >
     <Grid>
@@ -19,9 +19,9 @@
         </UniformGrid>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Button Content="確定" Width="80" Margin="5" IsDefault="True" Click="Ok_Click" />
-            <Button Content="取消" Width="80" Margin="5" IsCancel="True" />
-            <ComboBox Width="100" Margin="5" SelectedItem="{Binding KernelSize, Mode=TwoWay}" SelectionChanged="KernelSize_SelectionChanged">
+            <Button Content="確定" Width="50" Margin="5" IsDefault="True" Click="Ok_Click" />
+            <Button Content="取消" Width="50" Margin="5" IsCancel="True" />
+            <ComboBox Width="80" Margin="5" SelectedItem="{Binding KernelSize, Mode=TwoWay}" SelectionChanged="KernelSize_SelectionChanged">
                 <ComboBoxItem Content="3 x 3"/>
                 <ComboBoxItem Content="5 x 5"/>
             </ComboBox>

@@ -53,8 +53,8 @@ public partial class ConvolutioMaskDialog : Window {
 
     private void KernelSize_SelectionChanged(object sender, SelectionChangedEventArgs e) {
         if (sender is ComboBox cb && cb.SelectedItem is ComboBoxItem item) {
-            string sizeStr = item.Content.ToString() ?? "3x3";
-            currentSize = sizeStr == "5x5" ? 5 : 3;
+            string sizeStr = item.Content.ToString() ?? "3 x 3";
+            currentSize = sizeStr == "5 x 5" ? 5 : 3;
             BuildMaskTextBoxGrid(currentSize);
         }
     }

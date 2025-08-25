@@ -33,11 +33,14 @@ It implements common image processing algorithms **from scratch** and provides a
 
 ## 🖥️ Screenshots
 
-> Add screenshots or demo GIFs here
+### User Interface
+![main window](screenshots/demo_main.png)
 
-| Main Window | Noise Tools | Histogram Analysis |
-|-------------|-------------|--------------------|
-| ![](Assets/demo_main.png) | ![](Assets/demo_noise.png) | ![](Assets/demo_hist.png) |
+### Histroram Equalization
+![equalization](screenshots/demo_equalize.png)
+
+### Custom convolution mask
+![convolution](screenshots/demo_convolution.png)
 
 ---
 
