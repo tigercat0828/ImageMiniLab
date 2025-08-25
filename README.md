@@ -1,7 +1,9 @@
 # 🖼️ Image Mini Lab
 
+
 **Image Mini Lab** is a WPF desktop application built with the **MVVM pattern**.  
 It implements common image processing algorithms **from scratch** and provides a **user-friendly GUI** to experiment with them.  
+
 ---
 
 ## ✨ Features
