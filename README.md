@@ -56,5 +56,4 @@ It implements common image processing algorithms **from scratch** and provides a
 
 ---
 
-## 📂 Project Structure
 
